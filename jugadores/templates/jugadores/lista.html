@@ -16,6 +16,7 @@
                     <th>Nombre</th>
                     <th>Categoría</th>
                     <th>Edad</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,12 +25,15 @@
                     <td>{{ jugador.nombre }}</td>
                     <td>{{ jugador.categoria }}</td>
                     <td>{{ jugador.edad }}</td>
+                    <td>
+                        <a href="{% url 'editar_jugador' jugador.id %}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{% url 'eliminar_jugador' jugador.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <!-- Botón para agregar más jugadores -->
         <a href="{% url 'agregar_jugador' %}" class="btn btn-success">Agregar Más Jugadores</a>
     </div>
 
