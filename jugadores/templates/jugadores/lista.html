@@ -9,39 +9,87 @@
 <body class="bg-light">
 
 <div class="container mt-4">
-    <h2 class="mb-4 text-center">Lista de Jugadores</h2>
+    <h2 class="mb-4 text-center">Lista de Jugadores por Categoría</h2>
 
-    <table class="table table-striped table-bordered">
-        <thead class="table-dark">
-            <tr>
-                <th>Nombre</th>
-                <th>Categoría</th>
-                <th>Edad</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for jugador in jugadores %}
-            <tr>
-                <td>{{ jugador.nombre }}</td>
-                <td>{{ jugador.get_categoria_display }}</td>  <!-- Muestra la categoría con el nombre correcto -->
-                <td>{{ jugador.edad }}</td>
-                <td>
-                    <a href="{% url 'editar_jugador' jugador.id %}" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="{% url 'eliminar_jugador' jugador.id %}" class="btn btn-danger btn-sm"
-                       onclick="return confirm('¿Estás seguro de que deseas eliminar a {{ jugador.nombre }}?');">
-                        Eliminar
-                    </a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4" class="text-center text-muted">No hay jugadores registrados.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- Barra de búsqueda y filtro -->
+    <form method="GET" class="mb-4">
+        <div class="row">
+            <div class="col-md-6">
+                <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Buscar jugador...">
+            </div>
+            <div class="col-md-4">
+                <select name="categoria" class="form-select">
+                    <option value="">Todas las categorías</option>
+                    {% for key, value in categorias.items %}
+                        <option value="{{ key }}" {% if categoria_filtro == key %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            </div>
+        </div>
+    </form>
 
+    <!-- Tabla de jugadores -->
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Edad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for jugador in page_obj %}
+                <tr class="{% if jugador.categoria == '1ra' %}table-danger
+                           {% elif jugador.categoria == '2da' %}table-warning
+                           {% elif jugador.categoria == '3ra' %}table-info
+                           {% elif jugador.categoria == '4ta' %}table-primary
+                           {% elif jugador.categoria == '5ta' %}table-success
+                           {% elif jugador.categoria == '6ta' %}table-light
+                           {% elif jugador.categoria == '7ma' %}table-secondary
+                           {% else %}table-dark{% endif %}">
+                    <td>{{ jugador.nombre }}</td>
+                    <td>{{ jugador.get_categoria_display }}</td>
+                    <td>{{ jugador.edad }}</td>
+                    <td>
+                        <a href="{% url 'editar_jugador' jugador.id %}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{% url 'eliminar_jugador' jugador.id %}" class="btn btn-danger btn-sm"
+                           onclick="return confirm('¿Estás seguro de que deseas eliminar a {{ jugador.nombre }}?');">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No hay jugadores registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    <div class="d-flex justify-content-center mt-4">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">Primera</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+            {% endif %}
+
+            <li class="page-item disabled"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última</a></li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- Botón para agregar jugador -->
     <div class="d-flex justify-content-between">
         <a href="{% url 'agregar_jugador' %}" class="btn btn-primary">Agregar Jugador</a>
     </div>
