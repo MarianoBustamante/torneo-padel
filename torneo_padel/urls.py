@@ -19,6 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('jugadores/',include ('jugadores.urls')),
-    
+    path('jugadores/', include('jugadores.urls')),  # Esto enlaza las URLs de la app jugadores
 ]
