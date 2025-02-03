@@ -1,15 +1,20 @@
 from django.db import models
 
-
 class Jugador(models.Model):
+    CATEGORIAS = [
+        ('1ra', 'Primera'),
+        ('2da', 'Segunda'),
+        ('3ra', 'Tercera'),
+        ('4ta', 'Cuarta'),
+        ('5ta', 'Quinta'),
+        ('6ta', 'Sexta'),
+        ('7ma', 'Séptima'),
+        ('8va', 'Octava'),
+    ]
+
     nombre = models.CharField(max_length=100)
-    edad= models.IntegerField()
-    categoria = models.CharField(max_length=50, choices=[
-        ('Principiante', 'Principiante'),
-        ('Intermedio', 'Intermedio'),
-        ('Avanazado','Avanzado')
-    ])
-    fecha_registro = models.DateField(auto_now_add=True)
-    
-    def __ster__(self):
-        return f"{self.nombre} ({self.categoria})"
+    categoria = models.CharField(max_length=3, choices=CATEGORIAS, default='8va')
+    edad = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.nombre} ({self.get_categoria_display()})"

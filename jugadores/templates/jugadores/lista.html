@@ -8,34 +8,45 @@
 </head>
 <body class="bg-light">
 
-    <div class="container mt-4">
-        <h2 class="text-primary">Lista de Jugadores</h2>
-        <table class="table table-striped table-bordered mt-3">
-            <thead class="table-dark">
-                <tr>
-                    <th>Nombre</th>
-                    <th>Categoría</th>
-                    <th>Edad</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for jugador in jugadores %}
-                <tr>
-                    <td>{{ jugador.nombre }}</td>
-                    <td>{{ jugador.categoria }}</td>
-                    <td>{{ jugador.edad }}</td>
-                    <td>
-                        <a href="{% url 'editar_jugador' jugador.id %}" class="btn btn-warning btn-sm">Editar</a>
-                        <a href="{% url 'eliminar_jugador' jugador.id %}" class="btn btn-danger btn-sm">Eliminar</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Lista de Jugadores</h2>
 
-        <a href="{% url 'agregar_jugador' %}" class="btn btn-success">Agregar Más Jugadores</a>
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Edad</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for jugador in jugadores %}
+            <tr>
+                <td>{{ jugador.nombre }}</td>
+                <td>{{ jugador.get_categoria_display }}</td>  <!-- Muestra la categoría con el nombre correcto -->
+                <td>{{ jugador.edad }}</td>
+                <td>
+                    <a href="{% url 'editar_jugador' jugador.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'eliminar_jugador' jugador.id %}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('¿Estás seguro de que deseas eliminar a {{ jugador.nombre }}?');">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center text-muted">No hay jugadores registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between">
+        <a href="{% url 'agregar_jugador' %}" class="btn btn-primary">Agregar Jugador</a>
     </div>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
