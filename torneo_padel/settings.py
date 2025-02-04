@@ -55,8 +55,10 @@ ROOT_URLCONF = 'torneo_padel.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [
+            BASE_DIR / 'templates',  # Aquí agrega la carpeta de templates global si la tienes.
+        ],
+        'APP_DIRS': True,  # Esto permite que Django busque templates dentro de las apps
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -67,6 +69,8 @@ TEMPLATES = [
         },
     },
 ]
+
+
 
 WSGI_APPLICATION = 'torneo_padel.wsgi.application'
 
