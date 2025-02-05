@@ -11,6 +11,11 @@
                 <h2 class="text-center mb-4">Iniciar sesión</h2>
                 <form method="POST">
                     {% csrf_token %}
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>¡Oops!</strong> Por favor, corrige los errores a continuación.
+                        </div>
+                    {% endif %}
                     
                     <div class="mb-3">
                         <label for="id_username" class="form-label">Nombre de Usuario</label>

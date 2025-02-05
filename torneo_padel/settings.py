@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -55,9 +56,8 @@ ROOT_URLCONF = 'torneo_padel.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            BASE_DIR / 'templates',  # Aquí agrega la carpeta de templates global si la tienes.
-        ],
+        'DIRS': [BASE_DIR / 'templates',  # Aquí agrega la carpeta de templates global si la tienes.
+],
         'APP_DIRS': True,  # Esto permite que Django busque templates dentro de las apps
         'OPTIONS': {
             'context_processors': [

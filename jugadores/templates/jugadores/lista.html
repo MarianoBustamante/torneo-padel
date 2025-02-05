@@ -1,30 +1,28 @@
-<!-- templates/jugadores/lista.html -->
 {% extends 'jugadores/base.html' %}
 
 {% block title %}Lista de Jugadores{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <!-- Botón de Login -->
     <div class="row mb-3">
         <div class="col text-end">
             <a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
         </div>
     </div>
 
-    <!-- Botón de Agregar Jugador -->
     <div class="row mb-3">
         <div class="col text-end">
             <a href="{% url 'agregar_jugador' %}" class="btn btn-success">Agregar Jugador</a>
         </div>
     </div>
 
-    <!-- Filtros y búsqueda -->
     <div class="row mb-3">
         <div class="col-md-6">
             <form method="GET" class="d-flex">
                 <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Buscar jugador...">
-                <button type="submit" class="btn btn-success ms-2">Buscar</button>
+                <button type="submit" class="btn btn-success ms-2">
+                    <i class="fa fa-search"></i> Buscar
+                </button>
             </form>
         </div>
 
@@ -40,7 +38,6 @@
         </div>
     </div>
 
-    <!-- Lista de Jugadores -->
     <h2>Jugadores</h2>
     <div class="row">
         {% for jugador in page_obj %}
@@ -55,26 +52,19 @@
                 </div>
             </div>
         </div>
-        {% empty %}
-        <p>No hay jugadores que coincidan con tu búsqueda.</p>
         {% endfor %}
     </div>
 
-    <!-- Paginación -->
-    <div class="mt-3">
-        <nav>
-            <ul class="pagination">
-                {% if page_obj.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?page=1&q={{ query }}&categoria={{ categoria_filtro }}">Primera</a></li>
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ query }}&categoria={{ categoria_filtro }}">Anterior</a></li>
-                {% endif %}
-                <li class="page-item disabled"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
-                {% if page_obj.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ query }}&categoria={{ categoria_filtro }}">Siguiente</a></li>
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&q={{ query }}&categoria={{ categoria_filtro }}">Última</a></li>
-                {% endif %}
-            </ul>
-        </nav>
+    <div class="d-flex justify-content-center">
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="btn btn-outline-primary">Primera</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-primary">Anterior</a>
+        {% endif %}
+        <span class="btn btn-outline-secondary disabled">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-primary">Siguiente</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-primary">Última</a>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

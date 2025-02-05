@@ -15,6 +15,7 @@ class Jugador(models.Model):
     nombre = models.CharField(max_length=100)
     categoria = models.CharField(max_length=3, choices=CATEGORIAS, default='8va')
     edad = models.IntegerField()
+    email = models.EmailField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.nombre} ({self.get_categoria_display()})"
