@@ -6,6 +6,8 @@ from django.core.paginator import Paginator
 from .forms import JugadorForm, CustomAuthenticationForm
 from .models import Jugador
 from .forms import CustomUserCreationForm
+from collections import Counter
+from django.db.models import Count, Avg
 # Vista de agregar jugador
 @login_required
 def agregar_jugador(request):
@@ -21,29 +23,63 @@ def agregar_jugador(request):
 
 # Vista de lista de jugadores con búsqueda y filtrado por categoría
 def lista_jugadores(request):
-    query = request.GET.get('q', '')
-    categoria_filtro = request.GET.get('categoria', '')
+    query = request.GET.get("q", "")
+    categoria_filtro = request.GET.get("categoria", "")
 
     jugadores = Jugador.objects.all()
 
+    # Filtrar por nombre (si se ha pasado un término de búsqueda)
     if query:
         jugadores = jugadores.filter(nombre__icontains=query)
 
+    # Filtrar por categoría (si se ha pasado un filtro de categoría)
     if categoria_filtro:
         jugadores = jugadores.filter(categoria=categoria_filtro)
 
-    paginator = Paginator(jugadores, 10)  # 10 jugadores por página
+    # Obtener estadísticas por categoría
+    estadisticas = jugadores.values("categoria").annotate(total=Count("id"))
+
+    # Diccionario de categorías para la selección en el filtro
+    CATEGORIAS = {
+        "1ra": "Primera",
+        "2da": "Segunda",
+        "3ra": "Tercera",
+        "4ta": "Cuarta",
+        "5ta": "Quinta",
+        "6ta": "Sexta",
+        "7ma": "Séptima",
+        "8va": "Octava",
+    }
+
+    # Para la paginación
+    paginator = Paginator(jugadores, 10)  # Muestra 10 jugadores por página
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    categorias = Jugador.CATEGORIAS  # para el filtro de categorías
+    # Estadísticas
+    categoria_max_jugadores = estadisticas.order_by('-total').first()
+    categorias_data = [estadistica['total'] for estadistica in estadisticas]
+    categorias_labels = [CATEGORIAS.get(estadistica['categoria'], estadistica['categoria']) for estadistica in estadisticas]
 
-    return render(request, 'jugadores/lista.html', {
-        'page_obj': page_obj,
-        'query': query,
-        'categoria_filtro': categoria_filtro,
-        'categorias': categorias
-    })
+    # Calcular promedio de edad
+    promedio_edad = jugadores.aggregate(promedio=Avg('edad'))['promedio'] or 0
+
+    context = {
+        "jugadores": jugadores,
+        "query": query,
+        "categoria_filtro": categoria_filtro,
+        "categorias": CATEGORIAS,
+        "estadisticas": estadisticas,
+        "categoria_max_jugadores": categoria_max_jugadores,
+        "categorias_data": categorias_data,
+        "categorias_labels": categorias_labels,
+        "promedio_edad": promedio_edad,
+        "page_obj": page_obj,
+    }
+
+    return render(request, "jugadores/lista.html", context)
+
+
 
 # Vista de editar jugador
 @login_required
